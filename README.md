@@ -8,9 +8,11 @@
 <p align="center">
   Play music with kiky
  </p>
+ <p align="center">
+<img src="https://cdn.discordapp.com/attachments/771738114518679582/772294685817438218/Screenshot_386.png"/>
+</p>
 <p align="center">
  <img src="https://cdn.discordapp.com/attachments/771738114518679582/772293432189386752/Screenshot_384.png"/>
- <img src="https://cdn.discordapp.com/attachments/771738114518679582/772294685817438218/Screenshot_386.png"/>
 </p>
 
 <p align="center">
