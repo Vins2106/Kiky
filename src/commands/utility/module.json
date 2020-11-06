@@ -1,0 +1,6 @@
+{
+  "name": "Utility",
+  "desc": ".help utility",
+  "call": "utility",
+  "hide": false
+}

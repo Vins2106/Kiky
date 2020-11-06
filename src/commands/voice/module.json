@@ -1,0 +1,6 @@
+{
+  "name": "Voice",
+  "desc": ".help voice",
+  "call": "voice",
+  "hide": false
+}

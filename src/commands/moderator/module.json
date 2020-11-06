@@ -1,0 +1,6 @@
+{
+  "name": "Moderator",
+  "desc": ".help moderator",
+  "call": "moderator",
+  "hide": false
+}

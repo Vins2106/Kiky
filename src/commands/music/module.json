@@ -1,0 +1,6 @@
+{
+  "name": "Music",
+  "desc": ".help music",
+  "call": "music",
+  "hide": false
+}
