@@ -1,6 +1,6 @@
 {
   "prefix": ".",
-  "token": "NzcxMDA3NzA1MTAzNTk3NjEw.X5l24Q.FwqxHv8mMF7xqP85GIDKn8DuMwM",
-  "owner": "727110220400033865",
-  "yt": "AIzaSyDjWx6wEPrOG2XeMfNKGkFS3clgebb18mQ"
+  "token": "BOT_TOKEN",
+  "owner": "OWNER_ID",
+  "yt": "YT_API_V3"
 }
