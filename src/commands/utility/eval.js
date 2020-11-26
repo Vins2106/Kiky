@@ -38,7 +38,7 @@ ${e}
 
 exports.conf = {
     aliases: ['ev', 'e'],
-    cooldown: "5"
+    cooldown: "1"
 }
 
 exports.help = {

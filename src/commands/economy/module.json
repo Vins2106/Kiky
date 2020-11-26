@@ -1,0 +1,6 @@
+{
+  "name": "Economy",
+  "desc": "{prefix}commands economy",
+  "call": "economy",
+  "hide": false
+}

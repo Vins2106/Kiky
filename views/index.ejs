@@ -1,0 +1,193 @@
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {
+              background-color: #282828 !important;
+            }
+                        .card {
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+              font-family: arial;
+            }
+            .card img {
+              border:1px solid black;
+              border-radius:50%;
+              width:150px;
+              padding:10px 1px;
+              margin:0 auto;
+              height:150px;
+            }
+
+
+            .containers {
+              margin:10px;
+            }
+
+      .title {
+        color: grey;
+        font-size: 18px;
+      }
+
+      /*button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+      }*/
+
+      a {
+        text-decoration: none;
+        color: black;
+      }
+
+      button:hover, a:hover {
+        opacity: 0.7;
+      }
+
+            .centertext {
+              color: white;
+              margin-top: 90px;
+              font-size: 50px;
+            }
+
+                  .image {
+              color: white;
+              margin-top: 150px;
+              font-size: 50px;
+            }
+
+            .nav-link {
+              color: black;
+            }
+
+            img {
+              margin-top: -100px;
+              height: 250px;
+              width: auto;
+              overflow: hidden;
+            }
+
+            button {
+              transition-duration: 0.4s;
+            }
+
+            .hehe {
+              background-color: #282828;
+              color: white;
+              border: 2px solid #555555;
+              font-size: 40px;
+              border-radius: 10px;
+            }
+
+            .hehe:hover {
+              background-color: blue;
+              color: white;
+              box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+              border-radius: 15px;
+            }
+
+          </style>
+
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Kiky | Discord Bot</title>
+          <link rel="stylesheet" type="text/css" href="/mdb.min.css" />
+          <script src="/mdb.min.js"></script>
+          <link
+            href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+            rel="stylesheet"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            href="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.webp?size=4096"
+          />
+          <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1.0,user-scalable=yes"
+          />
+          <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+            integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK"
+            crossorigin="anonymous"
+          />
+          <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
+            integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
+            crossorigin="anonymous"
+          ></script>
+        </head>
+
+        <body>
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="/">Kiky</a>
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/invite">Invite</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/github">Github</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/commands">Commands</a>
+                  </li>
+
+                  <% if(req.user) { %>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/account"><%= req.user.username %>#<%= req.user.discriminator %></a>
+                  </li>
+                  <% }else{ %>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                  </li>
+                  <% } %>
+
+                </ul>
+              </div>        
+            </div>
+          </nav>
+
+
+          <p class="image" align="center">
+            <img src="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.png">
+          </p>
+
+
+              <p class="centertext" align="center">
+                Kiky is multifunction discord bot <br>
+              </p>
+
+          <p class="hehes" align="center">
+                      <button class="hehe" onclick="document.location='/invite'">
+                  INVITE
+                </button>
+                <button class="hehe" onclick="document.location='/commands'">
+                  GET STARTED
+                </button>
+
+          </p>
+
+        </body>
+      </html>

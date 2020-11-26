@@ -3,9 +3,9 @@ const db = require("quick.db");
 
 exports.run = async (client, message, args, color, prefix, serverQueue, url, searchString, ytdl, YouTube, play, chunk, handleVideo, youtube, queue) => {
 
-  if (!message.member.hasPermission("ADMINISTRATOR")) {
-    return message.channel.send('Sorry, you do not have **Administrator** permission')
-  }
+    if (!message.member.hasPermission("ADMINISTRATOR")) {
+      return message.channel.send("Sorry, you need **Administrator** permission")
+    }
   
   const user = message.mentions.users.first()
   if (!user) {
@@ -31,7 +31,7 @@ exports.conf = {
 }
 
 exports.help = {
-    name: 'warnaadd',
+    name: 'warnadd',
     description: 'Warn someone',
-    usage: 'warn [@user] <reason>'
+    usage: 'warnadd [@user] <reason>'
 }

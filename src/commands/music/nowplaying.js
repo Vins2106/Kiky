@@ -9,12 +9,11 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
         });
   
   
-
-  
   const embed = new MessageEmbed()
   .setAuthor(client.user.username + ' Music Manager', client.user.displayAvatarURL())
   .setColor(color)
-  .addField("Now playing:", `\`${serverQueue.songs[0].title} (${serverQueue.songs[0].time.hours}h : ${serverQueue.songs[0].time.minutes}m : ${serverQueue.songs[0].time.seconds}s)\``)
+  .addField("Now playing:", `\`${serverQueue.songs[0].title} (${serverQueue.songs[0].time.hours}h : ${serverQueue.songs[0].time.minutes}m : ${serverQueue.songs[0].time.seconds}s)\`
+Loop: \`${serverQueue.loop === true ? "on" : "off"}\` **|** Volume: \`${serverQueue.volume}%/100%\` **|** Voice Channel: \`${serverQueue.voiceChannel.name}\``)
   .setImage(serverQueue.songs[0].image.medium.url)
   .setFooter(`${serverQueue.songs[0].url}`)
         return message.channel.send(embed)

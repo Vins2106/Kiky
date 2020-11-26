@@ -1,6 +1,6 @@
 {
   "name": "Utility",
-  "desc": ".help utility",
+  "desc": "{prefix}commands utility",
   "call": "utility",
   "hide": false
 }

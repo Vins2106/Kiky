@@ -1,5 +1,7 @@
 const { MessageEmbed } = require('discord.js');
-exports.run = async (client, message, args, color, prefix, serverQueue, url, searchString, ytdl, YouTube, play, chunk, handleVideo, youtube, queue) => {
+const db = require("quick.db");
+
+exports.run = async (client, message, args, color, prefix, api, CanvasRenderService, ytdl, YouTube, play, chunk, handleVideo, youtube, queue) => {
 }
 
 exports.conf = {

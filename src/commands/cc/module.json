@@ -1,0 +1,6 @@
+{
+  "name": "Custom Command",
+  "desc": "{prefix}commands cc",
+  "call": "cc",
+  "hide": false
+}

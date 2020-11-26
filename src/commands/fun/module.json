@@ -1,6 +1,6 @@
 {
   "name": "Fun",
-  "desc": ".help fun",
+  "desc": "{prefix}commands fun",
   "call": "fun",
   "hide": false
 }

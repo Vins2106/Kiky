@@ -1,6 +1,6 @@
 {
   "name": "Voice",
-  "desc": ".help voice",
+  "desc": "{prefix}commands voice",
   "call": "voice",
   "hide": false
 }

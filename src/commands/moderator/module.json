@@ -1,6 +1,6 @@
 {
   "name": "Moderator",
-  "desc": ".help moderator",
+  "desc": "{prefix}commands moderator",
   "call": "moderator",
   "hide": false
 }

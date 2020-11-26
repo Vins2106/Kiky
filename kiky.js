@@ -5,24 +5,104 @@ const client = new Discord.Client({
   fetchAllMembers: true
 });
 
+const ws = require("ws")
+const Sequelize = require('sequelize');
+
 const { Util } = require("discord.js");
 const YouTube = require("simple-youtube-api");
 const ytdl = require("ytdl-core");
 require("dotenv").config();
 
 const Enmap = require("enmap");
-
-let games = {
-  hangman: new Enmap({ name: "hangman" }),
-  pokemon: new Enmap({ name: "pokemon" }),
-  tictactoe: new Enmap({ name: "tictactoe" })
-};
-
 client.config = require("./config.json");
 
 const youtube = new YouTube(client.config.yt);
 const queue = new Map();
 const db = require("quick.db");
+
+// DBL Stats
+const DBL = require("dblapi.js");
+const dbl = new DBL(client.config.dbl, client);
+
+// Optional events
+dbl.on('posted', () => {
+  console.log('Server count posted!');
+})
+
+dbl.on('error', e => {
+ console.log(`Oops! ${e}`);
+})
+
+client.on("message", async message => {
+  let recent = new Set(); // new Set();
+
+  // Ignore the bot.
+  if (message.author.bot || message.author === client.user) return;
+
+  // If the user has an exp. cooldown, ignore it.
+  if (recent.has(message.author.id)) return; 
+
+  // Get the leveling database.
+  // This is global leveling. If you want the leveling per server, do this:
+  // let userprof = db.get(`leveling.${message.guild.id}.${message.author.id}`);
+  let userprof = db.get(`leveling.${message.author.id}`);
+
+  // If the user doesn't have any leveling stats at all, set it up.
+  if (!userprof)
+    return db.set(`leveling.${message.author.id}`, { xp: 0, level: 0 });
+
+  // Give them an EXP.
+  await db.add(`leveling.${message.author.id}.xp`, client.gainedXp());
+
+  // Notice them if the user has leveled/ranked up.
+  if (client.getLevel(userprof.xp) > userprof.level) {
+    await db.add(`leveling.${message.author.id}.level`, 1);
+    userprof.level = client.getLevel(userprof.xp);
+    
+    let lvlmsg = db.get(`levelmsg.${message.guild.id}`)
+    if (!lvlmsg) lvlmsg = "**{usertag}** reached level **{level}!** Contratulations!" 
+    lvlmsg.replace(/{user}/g, message.author.username).replace(/{usertag}/g, message.author.tag).replace(/{level}/g, userprof.level)
+    
+    message.channel.send(lvlmsg.replace(/{user}/g, message.author.username).replace(/{usertag}/g, message.author.tag).replace(/{level}/g, userprof.level));
+  }
+
+  // Generate a random timer. (2)
+  let randomTimer = getRandomInt(60000, 75000); // Around 60 - 75 seconds. You can change it.
+
+  // Add the user into the Set()
+  recent.add(message.author.id);
+
+  // Remove the user when it's time to stop the cooldown.
+  client.setTimeout(() => {
+    recent.delete(message.author.id);
+  }, randomTimer);
+
+  // Generate a random timer.
+});
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const moment = require("moment");
+
+client.getLevel = xp => {
+  return Math.floor(0.177 * Math.sqrt(xp)) + 1;
+};
+
+client.getLevelBounds = level => {
+  // Example: getLevelBounds(1)
+  // Results: lowerBound: 1, upperBound: 32
+  const lowerBound = Math.ceil(((level - 1) / 0.177) ** 2);
+  const upperBound = Math.ceil((level / 0.177) ** 2);
+  return { lowerBound, upperBound };
+};
+
+client.gainedXp = () => {
+  // Generates a random XP amount. From range 3 - 9.
+  return Math.ceil(Math.random() * 9) + 3;
+};
 
 const jointocreatemap = new Map();
 
@@ -157,59 +237,43 @@ async function jointocreatechannel(user) {
 client.on("guildMemberAdd", async member => {
   let nick = db.get(`autonick.${member.guild.id}`);
   let auto = db.get(`autorole.${member.guild.id}`);
-  if (nick === null || nick === undefined) return;
+  if (!nick) return;
   if (auto === null || auto === undefined) return;
 
   const rol = member.guild.roles.cache.get(auto);
 
   member.roles.add(rol);
   member.setNickname(`${nick} ${member.user.username}`);
-
-  const serverstats = new db.table("ServerStats");
-
-  let totusers = await serverstats.fetch(`Statss_${member.guild.id}`, {
-    target: ".totusers"
-  });
-  let membcount = await serverstats.fetch(`Statss_${member.guild.id}`, {
-    target: ".membcount"
-  });
-  let botcount = await serverstats.fetch(`Statss_${member.guild.id}`, {
-    target: ".botcount"
-  });
-  let categ = await serverstats.fetch(`Statss_${member.guild.id}`, {
-    target: ".categid"
-  });
-  if (
-    totusers === undefined ||
-    membcount === undefined ||
-    botcount === undefined
-  )
-    return;
-
-  const a = member.guild.memberCount;
-  const b = member.guild.members.cache.filter(x => x.user.bot).size;
-  const c = a - b;
-
-  member.guild.channels.get(totusers).edit({ name: `Total Users : ${a}` });
-  member.guild.channels.get(membcount).edit({ name: `Human Users : ${c}` });
-  member.guild.channels.get(botcount).edit({ name: `Bot Users : ${b}` });
 });
 
 const token = client.config.token;
-const prefix = client.config.prefix;
 const fs = require("fs");
 const { Collection } = require("discord.js");
 const cooldowns = new Collection();
 
+
 client.login(token);
 
 client.on("ready", () => {
+  
+
+  
   console.log(`
 ${client.user.tag} Ready to use!
 ${client.users.cache.size} user's
 `);
   client.user.setStatus("idle");
+  
+  let shardid = client.ws.shards.map(x => x.id);
+  let shardtotal = client.ws.totalShards
+  
+      setInterval(() => {
+        dbl.postStats(client.guilds.cache.size, shardid, shardtotal);
+    }, 1800000);
+  
 });
+
+
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
@@ -246,6 +310,12 @@ fs.readdir("./src/commands/", (err, categories) => {
 
 client.on("message", async message => {
   if (message.author.bot) return;
+  
+  
+  let prefix = db.get(`prefix.${message.guild.id}`)
+if (prefix === undefined) prefix = client.config.prefix;
+if (prefix === null) prefix = client.config.prefix;
+  
   const args = message.content
     .slice(prefix.length)
     .trim()
@@ -290,11 +360,34 @@ client.on("message", async message => {
   }
 });
 
+  let custom = require("./custom.js")
+  
+  
+
+
+
 client.on("message", async message => {
   if (message.author.bot) return;
+  
+  
   if (message.channel.type == "dm") {
-    return message.channel.send("Hey, please use on server :)");
+    const embed = new Discord.MessageEmbed()
+    .setAuthor(client.user.username + " Warning!", client.user.displayAvatarURL())
+    .setColor("RED")
+    .setDescription(`Hey **${message.author.username}**, you should use on server, (warning)`)
+    
+    return message.channel.send(embed);
   }
+  
+              custom.findOne({ Guild: message.guild.id, Command: message.content },async (err, data) => {
+        if (err) throw err;
+        if (data) return message.channel.send(data.Content);
+        else return;
+      });
+  
+  let prefix = db.get(`prefix.${message.guild.id}`)
+if (prefix === undefined) prefix = client.config.prefix;
+if (prefix === null) prefix = client.config.prefix;
 
   if (!message.guild) return;
   if (!message.content.startsWith(prefix)) return;
@@ -307,6 +400,11 @@ client.on("message", async message => {
     .split(/ +/g);
   const cmd = args.shift().toLowerCase();
 
+  
+
+  
+  
+  
   const searchString = args.join(" ");
   const url = args.join(" ");
   const serverQueue = queue.get(message.guild.id);
@@ -330,6 +428,8 @@ client.on("message", async message => {
   const timestamps = cooldowns.get(commandFile.help.name);
   const cooldownAmount = (commandFile.conf.cooldown || 5) * 1000;
 
+
+  
   if (!timestamps.has(member.id)) {
     timestamps.set(member.id, now);
   } else {
@@ -351,6 +451,10 @@ client.on("message", async message => {
     setTimeout(() => timestamps.delete(member.id), cooldownAmount);
   }
 
+  
+
+const { CanvasRenderService } = require('chartjs-node-canvas')
+  
   try {
     let commands =
       client.commands.get(cmd) || client.commands.get(client.aliases.get(cmd));
@@ -369,17 +473,12 @@ client.on("message", async message => {
       chunk,
       handleVideo,
       youtube,
-      queue
+      queue,
     );
     message.channel.startTyping();
     if (!commands) return;
   } catch (e) {
-    message.channel.send({
-      embed: {
-        color: color,
-        description: "Sorry, i do not have this command"
-      }
-    });
+    message.channel.stopTyping(true)
   } finally {
     message.channel.stopTyping(true);
   }
@@ -452,13 +551,19 @@ function play(guild, song, message) {
     )
     .setColor("GREEN")
     .setDescription(
-      `Now playing **${song.title}**\n(\`${song.time.hours}h : ${song.time.minutes}m : ${song.time.seconds}s\`)`
+      `Now playing **${song.title}**\n(\`${song.time.hours}h : ${
+        song.time.minutes
+      }m : ${song.time.seconds}s\`)
+Loop: \`${serverQueue.loop === true ? "on" : "off"}\` **|** Volume: \`${
+        serverQueue.volume
+      }%/100%\` **|** Voice Channel: \`${serverQueue.voiceChannel.name}\`
+`
     )
     .setImage(song.image.medium.url)
     .setFooter(song.url + `\n\nOnly song request user can react`);
 
   db.set(`myvoice.${serverQueue.guild}`, serverQueue.voiceChannel.id);
-  db.set(`user.${serverQueue.guild}`, song.user);
+
   const m = serverQueue.textChannel.send(embeds).then(m => {
     m.react("⏸️");
     m.react("⏯️");
@@ -474,13 +579,9 @@ function play(guild, song, message) {
 
     collector.on("collect", (reaction, user) => {
       if (!serverQueue) return;
-      const member = message.guild.member(user);
+      const member = user;
 
-      if (!message.member.voice.channel) {
-        return reaction.users.remove(user);
-      }
-
-      if (message.member.voice.channel.id !== serverQueue.voiceChannel.id) {
+      if (member.id !== db.get(`user.${serverQueue.guild}`)) {
         return reaction.users.remove(user);
       }
 
@@ -569,6 +670,8 @@ async function handleVideo(video, message, voiceChannel, playlist = false) {
     check: message.member.voice.channel.id
   };
 
+  db.set(`user.${message.guild.id}`, message.author.id);
+
   if (!serverQueue) {
     const queueConstruct = {
       c: message.guild,
@@ -635,4 +738,185 @@ http://api.brainshop.ai/get?bid=153852&key=dfJVP7Jdd8TVZPdE&uid=${
   }
 });
 
-//test
+// Website
+
+const express = require("express");
+const app = express();
+const session = require("express-session");
+const passport = require("passport");
+const Strategy = require("passport-discord").Strategy;
+
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+var scopes = [
+  "identify",
+  "guilds.join",
+  "email"/*email', 'connections', (it is currently broken) / 'guilds', 'guilds.join'*/
+];
+var prompt = "consent";
+
+passport.use(
+  new Strategy(
+    {
+      clientID: "771007705103597610",
+      clientSecret: "MO-DeI38q5ktJqEtndTAFfiz15QZlVCe",
+      callbackURL: "https://kiky-bot.glitch.me/callback",
+      scope: scopes,
+      prompt: prompt
+    },
+    function(accessToken, refreshToken, profile, done) {
+      process.nextTick(function() {
+        return done(null, profile);
+      });
+    }
+  )
+);
+app.use(express.static("public"));
+
+app.get(
+  "/login",
+  passport.authenticate("discord", { scope: scopes, prompt: prompt }),
+  function(req, res) {}
+);
+app.get(
+  "/callback",
+  passport.authenticate("discord", { failureRedirect: "/" }),
+  function(req, res) {
+    res.redirect("/");
+  } // auth success
+);
+
+app.get("/invite", (request, response) => {
+  response.redirect(
+    "https://discord.com/oauth2/authorize?client_id=771007705103597610&scope=bot&permissions=2138566015"
+  );
+});
+
+app.get("/github", (request, response) => {
+  response.redirect("https://github.com/VincentsSaerang/Kiky");
+});
+
+app.get("/account", function(req, res) {
+  res.render("account.ejs", {
+    req: req,
+    res: res,
+    client: client
+  });
+});
+
+app.get("/commands", function(req, res) {
+  res.render("commands.ejs", {
+    req: req,
+    res: res,
+    client: client
+  });
+});
+
+app.get("/logout", function(req, res) {
+  req.logout();
+  res.redirect("/")
+});
+
+app.get("/", (req, res) => {
+  res.render("index.ejs", {
+    req: req,
+    client: client,
+    res: res
+  });
+  console.log(req.user)
+});
+
+app.get("/leaderboard", (req, res) => {
+  res.render("lb.ejs", {
+    req: req,
+    client: client,
+    res: res,
+    db: db
+  });
+});
+
+function checkAuth(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.redirect("/login");
+}
+
+const listener = app.listen(process.env.PORT, () => {
+  console.log("Your app is listening on port " + listener.address().port);
+});
+
+let count = 0;
+setInterval(
+  () =>
+    require("node-fetch")(process.env.url)
+      .then(() => console.log(`[${++count}] Kept ${process.env.url} alive.`))
+      .catch(e => console.log(e)),
+  5 * 60 * 1000
+);
+
+
+// Custom Commands
+
+
+const mongoose = require("mongoose")
+
+mongoose.connect(client.config.mongo, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+
+//  Bad Word
+
+client.on('message', async message => {
+  
+if (message.author.bot) return;
+
+  const db = require("quick.db")
+  
+  let user = message.author;
+  
+  let cek = db.get(`check.${user.id}`)
+  if (cek) {
+    
+    let random = Math.floor(Math.random() * 5);
+    db.add(`balance.${message.author.id}.wallet`, random)
+    
+  } else {
+    return;
+  }
+  
+
+let x = db.get(`cmd_${message.guild.id}`)
+
+if (!x) return;
+
+ if(!message.member.hasPermission("ADMINISTRATOR")) {
+   
+    var i;
+    for(i = 0;i < x.length; i++) {
+      
+      if (message.content.toLowerCase().includes(x[i].word.toLowerCase())) {
+      message.delete()
+      return message.channel.send(`__${message.author.tag}__, sorry your message include a badword`).then(x => x.delete({timeout: 5000}))
+      }
+    }
+ }
+
+})
+
+

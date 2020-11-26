@@ -1,6 +1,6 @@
 {
   "name": "Music",
-  "desc": ".help music",
+  "desc": "{prefix}commands music",
   "call": "music",
   "hide": false
 }

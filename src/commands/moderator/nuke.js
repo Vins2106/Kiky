@@ -19,7 +19,7 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
   m.react('✅');
   m.react('❌');
   
-    const filter = (reaction, user) => user.id !== message.channel.client.user.id;
+    const filter = (reaction, user) => user.id !== client.user.id;
     var collector = m.createReactionCollector(filter)  
       collector.on("collect", (reaction, user) => {
       const member = user;

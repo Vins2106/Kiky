@@ -2,5 +2,7 @@
   "prefix": ".",
   "token": "BOT_TOKEN",
   "owner": "OWNER_ID",
-  "yt": "YT_API_V3"
+  "yt": "YT_API_KEY",
+  "mongo": "MONGODB_URL",
+  "dbl": "BOT_DBL_TOKEN"
 }

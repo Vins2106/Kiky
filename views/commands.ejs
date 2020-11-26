@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #282828 !important;
+      }
+
+      .card {
+        item-float: left;
+      }
+      
+      .containers {
+        margin:10px;
+      }
+      
+      #main {
+  width: calc(100% - 180px);
+  height: auto;
+  background-color: #2C2F33;
+  margin: 30px auto;
+  border: solid 4px #23272A;
+  padding: 10px;
+  color: black;
+  text-align: left;
+}
+      
+      #commands {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  background-color: white;
+  overflow: auto;
+}
+
+#commands td,
+#commands th {
+  border: 2.5px solid #7289DA;
+  padding: 8px;
+}
+
+#commands tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#commands tr:hover {
+  background-color: #ddd;
+}
+
+#commands th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #7289DA;
+  color: white;
+}
+      
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+/*button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}*/
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
+}
+    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kiky | Discord Bot</title>
+    <link rel="stylesheet" type="text/css" href="/mdb.min.css" />
+    <script src="/mdb.min.js"></script>
+    <link
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.webp?size=4096"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,user-scalable=yes"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+      integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
+      integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Kiky</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/invite">Invite</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/github">Github</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/commands">Commands</a>
+            </li>
+            
+            <% if(req.user) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/account"><%= req.user.username %>#<%= req.user.discriminator %></a>
+            </li>
+            <% }else{ %>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </body>
+  
+  <body>
+    
+    <h1 class="text-white text-center">General</h1>
+    <div class="containers">
+    <div class="row row-cols-1 row-cols-md-3 g-4 text-center">
+      <div class="col">
+        <div class="card">
+          <img src="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.png?size=4096" alt="<%= client.user.username%>#<%= client.user.discriminator %>" class="card-img-top">
+        <div class="card-body">
+          <h1>Commands</h1>
+          <p class="card-title"><%= client.commands.size %></p>
+        </div>
+        </div>
+      </div>
+      
+      <div class="col">
+      <div class="card">
+                <img src="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.png?size=4096" alt="<%= client.user.username%>#<%= client.user.discriminator %>" class="card-img-top">
+        <div class="card-body">
+          <h1>Category</h1>
+          <p class="card-title"><%= client.helps.size %></p>
+        </div>
+      </div>
+      </div>
+      
+      <div class="col">
+      <div class="card">
+                <img src="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.png?size=4096" alt="<%= client.user.username%>#<%= client.user.discriminator %>" class="card-img-top"> 
+        <div class="card-body">
+          <h1>Aliases</h1>
+          <p class="card-title"><%= client.aliases.size %></p>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+    
+    
+        <h1 class="text-white text-center">Commands</h1>
+      <% 
+      let index = 0;
+      let module = client.commands.array()
+      
+      module.forEach((cmd) => { %>
+      
+
+
+    <div class="card-group">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title"><%= client.config.prefix %><%= cmd.help.usage %></h5>
+      <p class="card-text"><%= cmd.help.description %></p>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">Realtime change</small>
+    </div>
+  </div>
+</div>
+      <% }) %>
+  </body>
+</html>

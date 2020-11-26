@@ -9,6 +9,11 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
       return message.channel.send("Please give new name!")
     }
   
+  if (name.length > "15")
+    {
+      return message.channel.send("The voice name can't 15+")
+    }
+  
   message.channel.send(`Your voice name has been set to: **${name}**`)
   db.set(`voicename.${message.author.id}`, name)
   

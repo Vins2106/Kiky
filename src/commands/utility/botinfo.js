@@ -35,6 +35,11 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
 - **Used**: **__${formatBytes(process.memoryUsage().heapUsed)}__**
 } 
 `)
+  .addField("🔗 | Useful Link", `
+\`1\`) | **Invite** : **__[INVITE](https://kiky-bot.glitch.me/invite)__**
+\`2\`) | **Website** : **__[WEBSITE](https://kiky-bot.glitch.me)__**
+\`3\`) | **Commands** : **__[COMMANDS](https://kiky-bot.glitch.me/commands)__**
+\`4\`) | **Github** : **__[GITHUB](https://kiky-bot.glitch.me/github)__**`)
   
   
   
@@ -71,7 +76,7 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
 }
 
 exports.conf = {
-    aliases: ['bi', 'stats', 'status'],
+    aliases: ['bi', 'stats'],
     cooldown: "5"
 }
 

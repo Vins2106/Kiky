@@ -6,30 +6,28 @@ exports.run = async (client, message, args, color) => {
     
     const a = client.helps.get(module.name);
     
+    let ownername = await client.users.fetch(client.config.owner);
+    
     const embed = new MessageEmbed()
-    .setAuthor(client.user.username + ' Category', client.user.displayAvatarURL())
+    .setAuthor(client.user.username + " Help.", client.user.displayAvatarURL())
+    .setDescription(`Hi **${message.author.tag}**, welcome to another discord bot (**${client.user.username}**)\nTo get commands list, you need type \`${client.config.prefix}commands\``)
+    .addField(`New on ${client.user.username} ?`, `
+    Get started with see \`${client.config.prefix}status\`
+    `)
+    .addField(`Need help with commands ?`, `
+    You need to type \`${client.config.prefix}commands\` or go to [website](https://kiky-bot.glitch.me/commands)
+    `)
+    .addField(`Find bugs ?`, `
+    Try with use \`${client.config.prefix}bug <bug>\`
+    `)
+    .addField(`Vote Kiky`, `
+    You can [vote kiky](https://top.gg/bot/${client.user.id}/vote)
+    `)
     .setColor(color)
-    .setThumbnail(client.user.displayAvatarURL())
-    for (const mod of module) {
-      embed.addField(`**${mod.name}** (**__${client.helps.get(mod.call).cmds.length}__**)`, `\`${mod.desc}\``, true)
-    }
-    return message.channel.send(embed);
-  } else {
-    let cmd = args[0]
-    if (client.helps.get(cmd).call) {
-      const embed = new MessageEmbed()
-      .setAuthor(`${client.helps.get(cmd).name} Category`, client.user.displayAvatarURL())
-      .setColor(color)
-      .setThumbnail(client.user.displayAvatarURL())
-      
-      const x = client.helps.get(cmd);
-        let index = 0;
-        embed.setDescription(x.cmds.map(a => `\`${++index}\` **|** \`${client.config.prefix}${a.usage}\`\n${a.description}`).join("\n\n"))
-      
-      return message.channel.send(embed)
-    }
+    .setImage('https://cdn.discordapp.com/attachments/775987849698738176/781179925897543690/oie_YW3fXGPO5y06.png')
+      message.channel.send(embed)
   }
-}
+  }
 
 exports.conf = {
     aliases: ['h', 'cmds', 'cmdlist'],
