@@ -9,25 +9,3 @@
 
 ## Advance command help
 ![KIKY](https://cdn.discordapp.com/attachments/771738114518679582/772293881361727539/Screenshot_385.png)
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"><strong>Options</strong></th>
-<th><strong>Description</strong></th>
-<th><strong>Usage</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;">anime</td>
-<td>Random anime images.</td>
-<td><code>randomanime.anime()</code></td>
-</tr>
-<tr>
-<td style="text-align:center;">nsfw</td>
-<td>Random NSFW anime images.</td>
-<td><code>randomanime.nsfw()</code></td>
-</tr>
-</tbody>
-</table>
