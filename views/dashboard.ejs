@@ -82,6 +82,11 @@ button:hover, a:hover {
       * {
   box-sizing: border-box;
 }
+                  .centertext {
+              color: white;
+              margin-top: 90px;
+              font-size: 50px;
+            }
       .nav-link {
         color: white !important;
       }
@@ -97,7 +102,7 @@ button:hover, a:hover {
     </style>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Commands | Kiky</title>
+    <title>Manage | Kiky</title>
     <link rel="stylesheet" type="text/css" href="/mdb.min.css" />
     <script src="/mdb.min.js"></script>
     <link
@@ -183,49 +188,36 @@ button:hover, a:hover {
   
   <body>
     
-    <h1 class="text-white text-center">there is <%= client.commands.size %> commands</h1>
-    
-    
-    
-
-  </body>
-  
-  <body>
-
-
-
-    <% 
-    let index = 0;
-    let module = client.helps.array()
-    
-    for (const mod of module) { %>
-    
-    <h1 class="text-white text-center"><%= mod.name %></h1>
-                     <div class="containers">
+    <% if (req.user) { %>
+    <div class="containers">
     <div class="row row-cols-1 row-cols-md-3 g-4 text-center">
-    <% mod.cmds.map(x => { %>
+    <% req.user.guilds.forEach(guild => { %>
     
-
-              <div class="col">
-      <div class="card">
+    <% if (!client.guilds.cache.get(guild.id) || !client.guilds.cache.get(guild.id).members.cache.get(req.user.id).hasPermission("ADMINISTRATOR")) return; %>
+    
+            <%
+                let img = "https://cdn.discordapp.com/icons/" + guild.id + "/" + guild.icon + ""
+                if(!guild.icon) img = "https://cdn.discordapp.com/embed/avatars/0.png";
+            %>
+    
+      <div class="col">
+        <div class="card">
+          <img src="<%= img %>" class="card-img-top">
         <div class="card-body">
-          <h1><%= x.name %></h1>
-          <p class="card-title"><%= x.description %><br><%= client.config.prefix %><%= x.usage %></p>
+          <h1><%= guild.name %></h1>
+          <p class="card-title">Click the manage button to manage this server</p>
+          <a href="/manage/<%= guild.id %>" class="btn btn-primary">Manage</a>
+        </div>
         </div>
       </div>
-    </div>
-
+    
     <% }) %>
-    
-      
-      
     </div>
-            </div>
-    <br>
-    <br>
+    </div>
+    <% } else { %>
     
+     <p class="centertext" align="center" id="demo">You must <a href="/login">login</a> first to show your server</p>
     
     <% } %>
-    
 </body>
 </html>

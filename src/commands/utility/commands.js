@@ -12,7 +12,7 @@ exports.run = async (client, message, args, color, prefix, api, CanvasRenderServ
       .setImage('https://cdn.discordapp.com/attachments/775987849698738176/781182821850808350/oie_abq7cqeQPXjN.png')
       .setFooter(`Get detailed of command on website`)
     for (const mod of module) {
-      embed.addField(`**__${mod.name}__**`, `**${mod.desc.replace(/{prefix}/g, prefix)}**`)
+      embed.addField(`__${mod.name}__`, `\`${mod.desc.replace(/{prefix}/g, prefix)}\``, true)
     }
       message.channel.send(embed)
   } else {

@@ -21,7 +21,7 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
 
 if (!verify.size) return message.channel.send("Canceled, because you do not answer").then(() => {triger.edit(`Canceled`)})
   
-  let a = verify.first().content;
+  let a = verify.first().content.toLowerCase();
   
   let response = await message.channel.send(`Ok, the trigger name ***${a}***, now give response name.`)
   
@@ -49,7 +49,7 @@ if (!res.size) return message.channel.send("Canceled, because you do not answer"
           data.save();
 
           return message.channel.send(
-            `Successfully updated the command \`${triger}\` (\`${random}\`)`
+            `Successfully updated the command \`${a}\` (\`${random}\`)`
           );
         } else if (!data) {
           let newData = new custom({

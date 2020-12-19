@@ -14,15 +14,17 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
     return (x.author.id === message.author.id);
 
 };
-  const msg = await message.channel.send("What your name?");
+  const msg = await message.channel.send("What your name? `enter your name`");
 
-const verify = await message.channel.awaitMessages(filter, {max: 1, time: 6500}); // 6.5 seconds.
+const verify = await message.channel.awaitMessages(filter, {max: 1, time: 10000}); // 6.5 seconds.
 
 
 
 if (!verify.size) return message.channel.send("Canceled, because you do not answer");
   
   let choice = verify.first().content;
+  
+  if (choice.length > 5) return message.channel.send(`Sorry, the new name can't under 5 word.`)
   
   const msg2 = await message.channel.send(`Okay, i will call you **${choice}**, now you got economy features`)
   

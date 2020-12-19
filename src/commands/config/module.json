@@ -1,0 +1,6 @@
+{
+  "name": "⚙️ Config",
+  "desc": "{prefix}commands config",
+  "call": "config",
+  "hide": false
+}

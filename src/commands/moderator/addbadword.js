@@ -13,11 +13,9 @@ exports.run = async (client, message, args, color, prefix, api, CanvasRenderServ
 
     if(database && database.find(x => x.name === cmdname.toLowerCase())) return message.channel.send("Sorry, this word already added")
 
-    let data = {
-      word: cmdname.toLowerCase()
-    }
 
-    db.push(`cmd_${message.guild.id}`, data)
+
+    db.push(`cmd.${message.guild.id}`, cmdname.toLowerCase())
 
     return message.channel.send(`Added \`${cmdname.toLowerCase()}\` to badword list. note: \`Badword do not work if message author have administration permission.\``)
   

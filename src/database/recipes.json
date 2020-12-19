@@ -1,0 +1,69 @@
+[
+  {
+    "name": "pizza",
+    "needs": [
+      "milk",
+      "egg",
+      "butter",
+      "salt",
+      "sugar",
+      "cheese",
+      "flour",
+      "sausage"
+    ],
+    "price": "150"
+  },
+  {
+    "name": "cake",
+    "needs": [
+      "milk",
+      "egg",
+      "butter",
+      "sugar",
+      "flour"
+    ],    
+    "price": "25"
+  },
+  {
+    "name": "cupcake",
+    "needs": [
+      "milk",
+      "egg",
+      "butter",
+      "sugar",
+      "flour"
+    ],    
+    "price": "20"
+  },
+  {
+    "name": "bread",
+    "needs": [
+      "egg",
+      "butter",
+      "flour"
+    ],    
+    "price": "15"
+  },
+  {
+    "name": "fried-chicken",
+    "needs": [
+      "milk",
+      "egg",
+      "salt",
+      "sugar",
+      "chicken",
+      "flour"
+    ],
+    "price": "45"
+  },
+  {
+    "name": "french-fries",
+    "needs": [
+      "potato",
+      "salt",
+      "sugar",
+      "flour"
+    ],    
+    "price": "24"
+  }  
+]

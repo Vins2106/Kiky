@@ -1,0 +1,67 @@
+[
+  {
+    "name": "egg",
+    "price": "2"
+  },
+  {
+    "name": "garlic",
+    "price": "5"
+  },
+  {
+    "name": "milk",
+    "price": "12"
+  },
+  {
+    "name": "butter",
+    "price": "7"
+  },
+  {
+    "name": "shallot",
+    "price": "5"
+  },
+  {
+    "name": "tomato",
+    "price": "5"
+  },
+  {
+    "name": "rice",
+    "price": "12"
+  },
+  {
+    "name": "pepper",
+    "price": "2"
+  },
+  {
+    "name": "salt",
+    "price": "3"
+  },
+  {
+    "name": "sugar",
+    "price": "3"
+  },
+  {
+    "name": "cheese",
+    "price": "6"
+  },
+  {
+    "name": "ginger",
+    "price": "4"
+  },
+  {
+    "name": "flour",
+    "price": "8"
+  },
+  {
+    "name": "chicken",
+    "price": "15"
+  },
+  {
+    "name": "sausage",
+    "price": "4"
+  },
+  {
+    "name": "potato",
+    "price": "5"
+  }
+  
+]

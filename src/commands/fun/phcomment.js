@@ -24,7 +24,8 @@ exports.run = async (
   let av = a.username;
 
   let b = args.join(" ");
-
+  if (!b) return message.channel.send(`Please give some word`)
+  
   const img = a.displayAvatarURL({ format: "png" });
 
   const m = await message.channel.send("Loading Image...");

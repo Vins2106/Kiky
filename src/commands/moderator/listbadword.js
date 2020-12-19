@@ -7,22 +7,15 @@ exports.run = async (client, message, args, color, prefix, api, CanvasRenderServ
   .setAuthor(message.guild.name + " Bad Word List", message.guild.iconURL())
   .setColor(color)
   
-        let database = db.get(`cmd_${message.guild.id}`)
+        let database = db.get(`cmd.${message.guild.id}`)
 
         if (!database) return message.channel.send(`There is not badword for this server.`)
         
-      if(database && database.length) {
-
-        let i;
-        let index = 0;
-           for(i = 0;i < database.length; i++) {
-      
-             embed.addField(`${++index}`, database[i].word)
-      
-    }
-        
+  
+  
+      let bw = database.slice()  
        
-      }
+      embed.setDescription(bw.map(x => `\`${x}\``).join(", "))
   
   message.channel.send(embed)
   

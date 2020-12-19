@@ -49,7 +49,7 @@ exports.run = async (client, message, args, color, prefix, api, CanvasRenderServ
   .setFooter(`type: <prefix>shop buy [item]`)
   .addField(`XP (${x.xp.amount} 🪙)`, `${prefix}**shop buy ${x.xp.buy}**\n\`${x.xp.desc}\``)
   .addField(`Level (${x.level.amount} 🪙)`, `${prefix}**shop buy ${x.level.buy}**\n\`${x.level.desc}\``)
-  .addField(`Level (${x.lotre.amount} 🪙)`, `${prefix}**shop buy ${x.lotre.buy}**\n\`${x.lotre.desc}\``)
+  .addField(`Lotre (${x.lotre.amount} 🪙)`, `${prefix}**shop buy ${x.lotre.buy}**\n\`${x.lotre.desc}\``)
   
   message.channel.send(embed)
   
@@ -98,7 +98,7 @@ exports.run = async (client, message, args, color, prefix, api, CanvasRenderServ
 }
 
 exports.conf = {
-    aliases: ['store'],
+    aliases: [''],
     cooldown: "5"
 }
 

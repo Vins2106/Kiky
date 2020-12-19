@@ -82,6 +82,23 @@ button:hover, a:hover {
       * {
   box-sizing: border-box;
 }
+                  .centertext {
+              color: white;
+              margin-top: 90px;
+              font-size: 50px;
+            }
+      
+      .btn {
+        margin-top: 35px;
+      }
+      
+      .mybox {
+        margin: 50px;
+        border: 3px solid black;
+        padding: 25px;
+        background-color: lightgrey;
+      }
+      
       .nav-link {
         color: white !important;
       }
@@ -97,7 +114,7 @@ button:hover, a:hover {
     </style>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Commands | Kiky</title>
+    <title>Manage | Kiky</title>
     <link rel="stylesheet" type="text/css" href="/mdb.min.css" />
     <script src="/mdb.min.js"></script>
     <link
@@ -126,8 +143,8 @@ button:hover, a:hover {
     ></script>
               <meta property="og:type" content="website">
 <meta property="og:site_name" content="kiky-bot.glitch.me">
-<meta property="og:title" content="Commands List">
-<meta property="og:description" content="there is <%= client.commands.size %> commands and <%= client.helps.size %> modules. Kiky is multifunction discord bot, economy, moderation, fun, music, and another modules, invite now!">
+<meta property="og:title" content="Manage Server">
+<meta property="og:description" content="Manage your server from kiky dashboard">
 <meta property="og:image" content="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.webp?size=4096">
 <meta name="theme-color" content="GREEN">
   </head>
@@ -163,7 +180,7 @@ button:hover, a:hover {
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/dashboard">Dashboard</a>
-            </li>                    <li class="nav-item">
+            </li>                  <li class="nav-item">
                     <a class="nav-link" href="/leaderboard">Leaderboard</a>
                   </li>            
             <% if(req.user) { %>
@@ -182,50 +199,55 @@ button:hover, a:hover {
   </body>
   
   <body>
-    
-    <h1 class="text-white text-center">there is <%= client.commands.size %> commands</h1>
-    
-    
-    
-
-  </body>
   
-  <body>
-
-
-
-    <% 
-    let index = 0;
-    let module = client.helps.array()
+    <% if (req.user) { %>
+   
+    <h1 class="text-white text-center">Prefix</h1>
     
-    for (const mod of module) { %>
     
-    <h1 class="text-white text-center"><%= mod.name %></h1>
-                     <div class="containers">
-    <div class="row row-cols-1 row-cols-md-3 g-4 text-center">
-    <% mod.cmds.map(x => { %>
+    <div class="mybox">
+          <form method="post">
+      
+   
+  <div class="form-group">
+    <% let prefix = db.get(`prefix.${guild.id}`) 
+    if (!prefix) prefix = client.config.prefix;
+    %>
     
-
-              <div class="col">
-      <div class="card">
-        <div class="card-body">
-          <h1><%= x.name %></h1>
-          <p class="card-title"><%= x.description %><br><%= client.config.prefix %><%= x.usage %></p>
-        </div>
+  <div class="form-group">
+    <input type="text" class="form-control" id="formGroupExampleInput2" name="prefix" placeholder="<%= prefix %>">
+  </div>
       </div>
+  <p align="center">
+    <button class="btn btn-primary" onclick="getPrefix()">Save Change</button>
+      </p>
+    </form>  
     </div>
-
-    <% }) %>
     
-      
-      
-    </div>
-            </div>
-    <br>
-    <br>
+    <% } else { %>
     
+     <p class="centertext" align="center" id="demo">Hello! you must <a href="/login">login</a> to manage server</p>
     
     <% } %>
-    
 </body>
+  
+    <script>
+      
+      function submit() {
+        
+        var newprefix = document.getElementById('prefix').value;
+        if (!newprefix) newprefix = client.config.prefix;
+        
+        return db.set(`prefix.${guild.id}`, newprefix)
+        
+      }
+      
+      function getPrefix() {
+        var x = document.getElementById('prefix').value;
+        if (!x) x = client.config.prefix;
+        
+        db.set(`prefix.${guild.id}`, x)
+      }
+    </script>  
+  
 </html>

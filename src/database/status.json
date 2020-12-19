@@ -1,0 +1,26 @@
+[
+  {
+    "name": "{guilds} server's",
+    "type": "WATCHING"
+  },
+  {
+    "name": "discord",
+    "type": "LISTENING"
+  },
+  {
+    "name": "with {users} user's",
+    "type": "PLAYING"
+  },
+  {
+    "name": "{channels} channel's",
+    "type": "LISTENING"
+  },
+  {
+    "name": "https://kiky-bot.glitch.me",
+    "type": "WATCHING"
+  },
+  {
+    "name": "people use {prefix}help",
+    "type": "WATCHING"
+  }
+]

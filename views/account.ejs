@@ -48,10 +48,28 @@ a {
 button:hover, a:hover {
   opacity: 0.7;
 }
+                  .centertext {
+                            color: white;
+              margin-top: 90px;
+              font-size: 50px;
+            }
+      .nav-link {
+        color: white !important;
+      }
+      
+      .navbar-brand {
+        font-size: 35px !important;
+        color: white !important;
+      }
+      
+            .navbar {
+              margin: 10px;
+            }
     </style>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kiky | Discord Bot</title>
+    
+    <title><%= client.user.username %> | User Profile</title>
     <link rel="stylesheet" type="text/css" href="/mdb.min.css" />
     <script src="/mdb.min.js"></script>
     <link
@@ -61,7 +79,7 @@ button:hover, a:hover {
     <link
       rel="icon"
       type="image/png"
-      href="https://cdn.discordapp.com/avatars/771007705103597610/7d559d192ee8085143bfbbf8c1a9db42.webp?size=4096"
+      href="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.png?size=4096"
     />
     <meta
       name="viewport"
@@ -78,10 +96,16 @@ button:hover, a:hover {
       integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
       crossorigin="anonymous"
     ></script>
+              <meta property="og:type" content="website">
+<meta property="og:site_name" content="kiky-bot.glitch.me">
+<meta property="og:title" content="Account">
+<meta property="og:description" content="Kiky is multifunction discord bot, economy, moderation, fun, music, and another modules, invite now!">
+<meta property="og:image" content="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.webp?size=4096">
+<meta name="theme-color" content="GREEN">
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Kiky</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,6 +125,11 @@ button:hover, a:hover {
             <li class="nav-item">
               <a class="nav-link" href="/commands">Commands</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>                    <li class="nav-item">
+                    <a class="nav-link" href="/leaderboard">Leaderboard</a>
+                  </li>
           </ul>
         </div>
       </div>
@@ -111,14 +140,31 @@ button:hover, a:hover {
     <img src="https://cdn.discordapp.com/avatars/<%= req.user.id %>/<%= req.user.avatar %>.png?size=4096" alt="<%= req.user.username%>#<%= req.user.discriminator %>" class="card-img-top">
     <div class="card-body">
       <h1><%= req.user.username %>#<%= req.user.discriminator %></h1>
-      <p class="title">Discord User</p>
+      
+      <% let ceks = db.get(`check.${req.user.id}`) 
+         if (!ceks) {%>
+      <p class="title">
+        Discord User
+      </p>
+      <% } else {%>
+      
+      <p class="title">You have <%= db.get(`balance.${req.user.id}.wallet`).toLocaleString() || "0"%> coin on wallet</p>
+      <p class="title">
+        and <%= db.get(`balance.${req.user.id}.bank`).toLocaleString() || "0" %> on bank!
+      </p>
+      <% } %>
       <a href="/logout" class="btn btn-primary">Log Out</a>
     </div>
     </div>
   <% } else { %>
-  
-  <a href="/login" style="text-align:center;text-decoration:none;">Login</a>
-  
+                <p class="centertext" align="center">
+                Oh no, you do not <a href="/login">login</a> :( <br>
+              </p>
+              .centertext {
+                            color: white;
+              margin-top: 90px;
+              font-size: 50px;
+            }
   <% } %>
   
   

@@ -4,7 +4,6 @@
           <style>
             body {
               background-color: #282828 !important;
-              overflow: hidden;
             }
                         .card {
               box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -53,8 +52,8 @@
 
             .centertext {
               color: white;
-              margin-top: 27px;
-              font-size: 44px;
+              margin-top: 90px;
+              font-size: 50px;
             }
 
                   .image {
@@ -82,7 +81,7 @@
               background-color: #282828;
               color: white;
               border: 2px solid #555555;
-              font-size: 35px;
+              font-size: 40px;
               border-radius: 10px;
             }
 
@@ -92,20 +91,7 @@
               box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
               border-radius: 15px;
             }
-            
-      .nav-link {
-        color: white !important;
-      }
-      
-      .navbar-brand {
-        font-size: 35px !important;
-        color: white !important;
-      }
-      
-            .navbar {
-              margin: 10px;
-            }
-      
+
           </style>
 
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -145,63 +131,20 @@
         </head>
 
         <body>
-          <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="/">Kiky</a>
-              <button
-                class="navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarNav"
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/">Home</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/invite">Invite</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/github">Github</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/commands">Commands</a>
-                  </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard">Dashboard</a>
-            </li>                    <li class="nav-item">
-                    <a class="nav-link" href="/leaderboard">Leaderboard</a>
-                  </li>
-                  <% if(req.user) { %>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/account"><%= req.user.username %>#<%= req.user.discriminator %></a>
-                  </li>
-                  <% }else{ %>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                  </li>
-                  <% } %>
-
-                </ul>
-              </div>        
-            </div>
-          </nav>
 
 
           <p class="image" align="center">
             <img src="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.png">
           </p>
 
-          
+      
                     
-                       <p class="centertext" align="center">Kiky. Multi Porpose Discord Bot</p>
-  
+                       <p class="centertext" align="center">
+                         Oh no, want to go back  <a href="/">home</a>?
+              </p>
+   
+          
+
           
           
  
@@ -217,6 +160,4 @@
           </p>
 
         </body>
-
-          
       </html>

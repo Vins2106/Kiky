@@ -1,9 +1,15 @@
+// what are you doing here? you have discord? if have, contact me or add friend: Vins#0894
+
 const Client = require("discord.js");
 const Discord = require("discord.js");
 const client = new Discord.Client({
   disableMentions: "everyone",
   fetchAllMembers: true
 });
+
+const bodyParser = require("body-parser")
+
+const urlencodedParser = bodyParser.urlencoded({extended: false})
 
 const ws = require("ws")
 const Sequelize = require('sequelize');
@@ -14,24 +20,21 @@ const ytdl = require("ytdl-core");
 require("dotenv").config();
 
 const Enmap = require("enmap");
-client.config = require("./config.json");
+client.config = {
+  prefix: ".",
+  yt: process.env.YT,
+  token: process.env.token,
+  dbl: process.env.dbl,
+  status: 10000,
+  mongo: process.env.mongo,
+  owner: process.env.owner
+}
+  const color = "GREEN";
 
-const youtube = new YouTube(client.config.yt);
-const queue = new Map();
+const youtube = new YouTube(client.config.yt)
+
 const db = require("quick.db");
 
-// DBL Stats
-const DBL = require("dblapi.js");
-const dbl = new DBL(client.config.dbl, client);
-
-// Optional events
-dbl.on('posted', () => {
-  console.log('Server count posted!');
-})
-
-dbl.on('error', e => {
- console.log(`Oops! ${e}`);
-})
 
 client.on("message", async message => {
   let recent = new Set(); // new Set();
@@ -59,11 +62,26 @@ client.on("message", async message => {
     await db.add(`leveling.${message.author.id}.level`, 1);
     userprof.level = client.getLevel(userprof.xp);
     
-    let lvlmsg = db.get(`levelmsg.${message.guild.id}`)
+    let disable = db.get(`lvlx.${message.guild.id}`)
+    if (!disable) {
+         let log = db.get(`lvllog.${message.guild.id}`)
+    if (!log) {
+          let lvlmsg = db.get(`levelmsg.${message.guild.id}`)
     if (!lvlmsg) lvlmsg = "**{usertag}** reached level **{level}!** Contratulations!" 
     lvlmsg.replace(/{user}/g, message.author.username).replace(/{usertag}/g, message.author.tag).replace(/{level}/g, userprof.level)
     
     message.channel.send(lvlmsg.replace(/{user}/g, message.author.username).replace(/{usertag}/g, message.author.tag).replace(/{level}/g, userprof.level));
+    } else {
+          let lvlmsg = db.get(`levelmsg.${message.guild.id}`)
+    if (!lvlmsg) lvlmsg = "**{usertag}** reached level **{level}!** Contratulations!" 
+    lvlmsg.replace(/{user}/g, message.author.username).replace(/{usertag}/g, message.author.tag).replace(/{level}/g, userprof.level)
+    
+    client.channels.cache.get(log).send(lvlmsg.replace(/{user}/g, message.author.username).replace(/{usertag}/g, message.author.tag).replace(/{level}/g, userprof.level));
+    } 
+    } else {
+      return;
+    }
+    
   }
 
   // Generate a random timer. (2)
@@ -106,7 +124,7 @@ client.gainedXp = () => {
 
 const jointocreatemap = new Map();
 
-client.on("voiceStateUpdate", (oldState, newState) => {
+client.on("voiceStateUpdate", async (oldState, newState) => {
   let config;
   let ch = db.get(`voice.${newState.guild.id}`);
 
@@ -157,8 +175,12 @@ client.on("voiceStateUpdate", (oldState, newState) => {
         `tempvoicechannel_${oldState.guild.id}_${oldState.channelID}`
       )
     ) {
-      var vc = oldState.guild.channels.cache.get(
+      var vc = client.channels.cache.get(
         jointocreatemap.get(
+          `tempvoicechannel_${oldState.guild.id}_${oldState.channelID}`
+        )
+      ) || await client.channels.fetch(
+              jointocreatemap.get(
           `tempvoicechannel_${oldState.guild.id}_${oldState.channelID}`
         )
       );
@@ -169,7 +191,9 @@ client.on("voiceStateUpdate", (oldState, newState) => {
         );
 
         db.delete(`voicem.${newState.member.user.id}`);
-
+                  let awokaowkoaw = await db.delete(`voicelimit.${newState.member.voice.id}`)
+          if(!awokaowkoaw) return;
+        
         return vc.delete();
       } else {
       }
@@ -197,9 +221,8 @@ client.on("voiceStateUpdate", (oldState, newState) => {
           );
 
           db.delete(`voicem.${newState.member.user.id}`);
-
-          return vc.delete();
-        } else {
+          let awokaowkoaw = await db.delete(`voicelimit.${newState.member.voice.id}`)
+          if(!awokaowkoaw) return;
         }
       }
     }
@@ -244,6 +267,77 @@ client.on("guildMemberAdd", async member => {
 
   member.roles.add(rol);
   member.setNickname(`${nick} ${member.user.username}`);
+  
+  
+//   Welcomer
+  let chlid = db.get(`joinchl.${member.guild.id}`)
+  if (!chlid) return;
+  
+  let channel = client.channels.cache.get(chlid) || await client.channels.fetch(chlid);
+  
+
+  let joinmsgold = db.get(`joinmsg.${member.guild.id}`);
+  if (!joinmsgold) return;
+  
+  let joinmsg = joinmsgold.replace(/{usertag}/g, member.user.tag).replace(/{user}/g, `<@${member.user.id}>`).replace(/{guild}/g, member.guild.name).replace(/{memberCount}/g, member.guild.memberCount)
+  
+  let joinbg = db.get(`joinbg.${member.guild.id}`)
+  if (!joinbg) joinbg = 'https://2.bp.blogspot.com/-DQnJ9idYfYk/Vh5cgqVETbI/AAAAAAAAAOQ/9vRw3rlScng/s1600/22940_anime_scenery.jpg%22'
+  
+  let joinimgmsg = db.get(`joinimgmsg.${member.guild.id}`)
+  if (!joinimgmsg) joinimgmsg = "Welcome"
+  
+  const Canvas = require("canvas");
+
+  let user = member.user;
+  
+  const canvas = Canvas.createCanvas(500, 225)
+  const ctx = canvas.getContext("2d");
+  const background = await Canvas.loadImage(joinbg);
+  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+  let colors;
+  let yellow = "#a1ff00"
+  let white = "#ffffff"
+  let black = "#080000"
+  
+  ctx.strokeStyle = yellow
+  ctx.strokeRect(0, 0, canvas.width, canvas.height)
+
+  ctx.fillStyle = black
+  var size1 = 40
+  var size2 = 30
+  var size3 = 30
+
+  var name = client.users.cache.get(user.id).tag
+  do {
+    ctx.font = `${size1 -= 5}px sans-serif`
+  } while (ctx.measureText(name).width > canvas.width - 255)
+  ctx.fillText(name, 200, 65)
+  var joined = joinimgmsg;
+  do {
+    ctx.font = `${size3 -= 1}px sans`
+  } while (ctx.measureText(joined).width > canvas.width - 255)
+  ctx.fillText(joined, 200, 145)
+
+
+  ctx.beginPath()
+  ctx.arc(100, 100, 75, 0, Math.PI * 2, true)
+  ctx.closePath()
+  ctx.clip()
+
+
+  const avatar = await Canvas.loadImage(user.displayAvatarURL({format: "jpg"}))
+  ctx.drawImage(avatar, 25, 25, 150, 150)
+
+  const final = new Discord.MessageAttachment(canvas.toBuffer(), "welcome.png")
+
+  let joindm = db.get(`joindm.${member.guild.id}`)
+  if (!joindm) {
+    return channel.send(`${joinmsg}`, final);
+  } else {
+    member.user.send(`${joinmsg}`, final)
+  }
 });
 
 const token = client.config.token;
@@ -264,16 +358,28 @@ ${client.users.cache.size} user's
 `);
   client.user.setStatus("idle");
   
+  
   let shardid = client.ws.shards.map(x => x.id);
   let shardtotal = client.ws.totalShards
   
-      setInterval(() => {
-        dbl.postStats(client.guilds.cache.size, shardid, shardtotal);
-    }, 1800000);
+  let files = require("./src/database/status.json")
   
+  setInterval(function() {
+    
+    let randomStatus = files[Math.floor(Math.random() * files.length)];
+    
+    let statusName = randomStatus.name.replace(/{users}/g, client.users.cache.size.toLocaleString()).replace(/{guilds}/g, client.guilds.cache.size.toLocaleString()).replace(/{channels}/g, client.channels.cache.size.toLocaleString()).replace(/{prefix}/g, client.config.prefix)
+    
+    client.user.setActivity(statusName, {type: randomStatus.type});
+    
+  }, client.config.status)
 });
 
-
+async function setStatus(file) {
+  
+  
+  client.user.setActivity()
+}
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
@@ -325,12 +431,31 @@ if (prefix === null) prefix = client.config.prefix;
   let msg = message.content.toLowerCase();
 
   if (msg == `<@${client.user.id}>` || msg == `<@!${client.user.id}>`) {
-    message.channel.send(
-      `Hi **${message.author.username}**, The current prefix is: **\`${prefix}\`**`
-    );
+    
+    const tagEmbed = new Discord.MessageEmbed()
+    .setAuthor(client.user.username + "", client.user.displayAvatarURL())
+    .setDescription(`The current \`prefix\` for **${message.guild.name}** is **\`${prefix}\`**`)
+    .setColor(color)
+    .addField("Why me?", `
+    **- multi porpose
+    - easy to use
+    - 24/7 online
+    - make server custom command/reaction
+    - and other, to read the guide, use \`${prefix}guide\`**
+    `)
+    .addField(`Use full links`, `
+    **website: https://kiky.glitch.me
+    invite: https://kiky.glitch.me/invite
+    commands: https://kiky.glitch.me/commands
+    leaderboard: https://kiky.glitch.me/leaderboard
+    github: https://kiky.glitch.me/github**
+    `)
+    .setFooter(`To start the economy, use ${prefix}login`)
+    
+    message.channel.send(tagEmbed)
   }
 
-  let AFKdata = JSON.parse(fs.readFileSync("./src/database/afk.json", "utf8"));
+    let AFKdata = JSON.parse(fs.readFileSync("./src/database/afk.json", "utf8"));
 
   if (message.author.id in AFKdata && cmd !== "afk") {
     delete AFKdata[message.author.id];
@@ -363,7 +488,36 @@ if (prefix === null) prefix = client.config.prefix;
   let custom = require("./custom.js")
   
   
+const { APIMessage, Structures } = require("discord.js");
 
+class Message extends Structures.get("Message") {
+    async inlineReply(content, options) {
+        const mentionRepliedUser = typeof ((options || content || {}).allowedMentions || {}).repliedUser === "undefined" ? true : ((options || content).allowedMentions).repliedUser;
+        delete ((options || content || {}).allowedMentions || {}).repliedUser;
+
+        const apiMessage = content instanceof APIMessage ? content.resolveData() : APIMessage.create(this.channel, content, options).resolveData();
+        Object.assign(apiMessage.data, { message_reference: { message_id: this.id } });
+    
+        if (!apiMessage.data.allowed_mentions || Object.keys(apiMessage.data.allowed_mentions).length === 0)
+            apiMessage.data.allowed_mentions = { parse: ["users", "roles", "everyone"] };
+        if (typeof apiMessage.data.allowed_mentions.replied_user === "undefined")
+            Object.assign(apiMessage.data.allowed_mentions, { replied_user: mentionRepliedUser });
+
+        if (Array.isArray(apiMessage.data.content)) {
+            return Promise.all(apiMessage.split().map(x => {
+                x.data.allowed_mentions = apiMessage.data.allowed_mentions;
+                return x;
+            }).map(this.inlineReply.bind(this)));
+        }
+
+        const { data, files } = await apiMessage.resolveFiles();
+        return this.client.api.channels[this.channel.id].messages
+            .post({ data, files })
+            .then(d => this.client.actions.MessageCreate.handle(d).message);
+    }
+}
+
+Structures.extend("Message", () => Message);
 
 
 client.on("message", async message => {
@@ -379,21 +533,18 @@ client.on("message", async message => {
     return message.channel.send(embed);
   }
   
-              custom.findOne({ Guild: message.guild.id, Command: message.content },async (err, data) => {
+              custom.findOne({ Guild: message.guild.id, Command: message.content.toLowerCase() },async (err, data) => {
         if (err) throw err;
-        if (data) return message.channel.send(data.Content);
+        if (data) return message.inlineReply(data.Content);
         else return;
       });
   
   let prefix = db.get(`prefix.${message.guild.id}`)
 if (prefix === undefined) prefix = client.config.prefix;
 if (prefix === null) prefix = client.config.prefix;
-
-  if (!message.guild) return;
+  
   if (!message.content.startsWith(prefix)) return;
-  if (!message.member)
-    message.member = await message.guild.fetchMember(message);
-
+  
   const args = message.content
     .slice(prefix.length)
     .trim()
@@ -404,10 +555,7 @@ if (prefix === null) prefix = client.config.prefix;
 
   
   
-  
-  const searchString = args.join(" ");
-  const url = args.join(" ");
-  const serverQueue = queue.get(message.guild.id);
+
 
   if (cmd.length === 0) return;
 
@@ -415,7 +563,6 @@ if (prefix === null) prefix = client.config.prefix;
 
   let AFKdata = JSON.parse(fs.readFileSync("./src/database/afk.json", "utf8"));
 
-  const color = "GREEN";
 
   let commandFile =
     client.commands.get(cmd) || client.commands.get(client.aliases.get(cmd));
@@ -464,22 +611,19 @@ const { CanvasRenderService } = require('chartjs-node-canvas')
       args,
       color,
       prefix,
-      serverQueue,
-      url,
-      searchString,
       ytdl,
       YouTube,
-      play,
-      chunk,
-      handleVideo,
-      youtube,
-      queue,
+      youtube
     );
     message.channel.startTyping();
     if (!commands) return;
   } catch (e) {
     message.channel.stopTyping(true)
   } finally {
+    
+    let cmdsname = client.commands.get(cmd) || client.commands.get(client.aliases.get(cmd))
+    
+    db.add(`command.${cmdsname.help.name}`, 1)
     message.channel.stopTyping(true);
   }
 });
@@ -502,208 +646,7 @@ process.on("uncaughtException", err => {
   process.exit(1);
 });
 
-function chunk(array, chunkSize) {
-  const temp = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    temp.push(array.slice(i, i + chunkSize));
-  }
-  return temp;
-}
 
-function play(guild, song, message) {
-  const serverQueue = queue.get(guild.id);
-
-  if (!song) {
-    serverQueue.textChannel.send({
-      embed: {
-        color: "GREEN",
-        description: `Queue ended! leave voice channel...`
-      }
-    });
-
-    const db = require("quick.db");
-    db.delete(`myvoice.${serverQueue.guild}`);
-
-    serverQueue.voiceChannel.leave();
-    return queue.delete(guild.id);
-  }
-
-  const pl = ytdl(song.url);
-
-  const dispatcher = serverQueue.connection
-    .play(pl)
-    .on("finish", () => {
-      const shiffed = serverQueue.songs.shift();
-      if (serverQueue.loop === true) {
-        serverQueue.songs.push(shiffed);
-      }
-      play(guild, serverQueue.songs[0]);
-    })
-    .on("error", error => console.error(error));
-  dispatcher.setVolume(serverQueue.volume / 100);
-
-  const { MessageEmbed } = require("discord.js");
-
-  const embeds = new MessageEmbed()
-    .setAuthor(
-      client.user.username + " Music Manager",
-      client.user.displayAvatarURL()
-    )
-    .setColor("GREEN")
-    .setDescription(
-      `Now playing **${song.title}**\n(\`${song.time.hours}h : ${
-        song.time.minutes
-      }m : ${song.time.seconds}s\`)
-Loop: \`${serverQueue.loop === true ? "on" : "off"}\` **|** Volume: \`${
-        serverQueue.volume
-      }%/100%\` **|** Voice Channel: \`${serverQueue.voiceChannel.name}\`
-`
-    )
-    .setImage(song.image.medium.url)
-    .setFooter(song.url + `\n\nOnly song request user can react`);
-
-  db.set(`myvoice.${serverQueue.guild}`, serverQueue.voiceChannel.id);
-
-  const m = serverQueue.textChannel.send(embeds).then(m => {
-    m.react("⏸️");
-    m.react("⏯️");
-    m.react("⏹");
-    m.react("🔁");
-    m.react("🗑️");
-
-    const filter = (reaction, user) =>
-      user.id !== serverQueue.textChannel.client.user.id;
-    var collector = m.createReactionCollector(filter, {
-      time: song.duration > 0 ? song.duration * 1000 : 600000
-    });
-
-    collector.on("collect", (reaction, user) => {
-      if (!serverQueue) return;
-      const member = user;
-
-      if (member.id !== db.get(`user.${serverQueue.guild}`)) {
-        return reaction.users.remove(user);
-      }
-
-      switch (reaction.emoji.name) {
-        case "⏸️":
-          reaction.users.remove(user);
-          if (serverQueue && serverQueue.playing) {
-            serverQueue.playing = false;
-            serverQueue.connection.dispatcher.pause();
-            return serverQueue.textChannel.send({
-              embed: {
-                color: "GREEN",
-                description: `${user}` + " **Succesfully pause server queue!**"
-              }
-            });
-          }
-          break;
-
-        case "⏯️":
-          reaction.users.remove(user);
-          if (serverQueue && !serverQueue.playing) {
-            serverQueue.playing = true;
-            serverQueue.connection.dispatcher.resume();
-            return serverQueue.textChannel.send({
-              embed: {
-                color: "GREEN",
-                description:
-                  `${user}` + " **Succesfully resume the server queue!**"
-              }
-            });
-          }
-          break;
-
-        case "🗑️":
-          reaction.users.remove(user);
-          m.delete();
-          serverQueue.textChannel.send(`${user}` + " Delete Player");
-          break;
-
-        case "🔁":
-          reaction.users.remove(user);
-          if (serverQueue) {
-            serverQueue.loop = !serverQueue.loop;
-            return serverQueue.textChannel.send({
-              embed: {
-                color: "GREEN",
-                description:
-                  `${user}` +
-                  ` loop **${
-                    serverQueue.loop === true ? "enabled" : "disabled"
-                  }** for the music`
-              }
-            });
-          }
-          break;
-
-        case "⏹":
-          reaction.users.remove(user);
-          serverQueue.songs = [];
-          serverQueue.connection.dispatcher.end(
-            "[runCmd] Stop command has been used"
-          );
-          serverQueue.textChannel.send(`${user}` + " Delete queue");
-          break;
-      }
-    });
-
-    collector.on("end", () => {
-      m.reactions.removeAll();
-      if (m && !m.deleted) {
-        m.delete({ timeout: 3000 });
-      }
-    });
-  });
-}
-
-async function handleVideo(video, message, voiceChannel, playlist = false) {
-  const serverQueue = queue.get(message.guild.id);
-  const song = {
-    id: video.id,
-    title: Util.escapeMarkdown(video.title),
-    url: `https://www.youtube.com/watch?v=${video.id}`,
-    image: video.thumbnails,
-    time: video.duration,
-    user: message.author.id,
-    check: message.member.voice.channel.id
-  };
-
-  db.set(`user.${message.guild.id}`, message.author.id);
-
-  if (!serverQueue) {
-    const queueConstruct = {
-      c: message.guild,
-      guild: message.guild.id,
-      textChannel: message.channel,
-      voiceChannel: voiceChannel,
-      connection: null,
-      songs: [],
-      volume: 100,
-      playing: true,
-      loop: false
-    };
-    queue.set(message.guild.id, queueConstruct);
-    queueConstruct.songs.push(song);
-
-    var connection = await voiceChannel.join();
-    queueConstruct.connection = connection;
-    play(message.guild, queueConstruct.songs[0], message);
-    connection.voice.setSelfDeaf(true);
-  } else {
-    serverQueue.songs.push(song);
-    if (playlist) return;
-    else
-      return message.channel.send({
-        embed: {
-          color: "GREEN",
-          description: `**Succefully** added **${song.title}** to server queue!`
-        }
-      });
-  }
-  return;
-}
 
 client.on("message", async message => {
   if (message.author.bot) return;
@@ -767,7 +710,7 @@ passport.deserializeUser(function(obj, done) {
 var scopes = [
   "identify",
   "guilds.join",
-  "email"/*email', 'connections', (it is currently broken) / 'guilds', 'guilds.join'*/
+  "guilds"/*email', 'connections', (it is currently broken) / 'guilds', 'guilds.join'*/
 ];
 var prompt = "consent";
 
@@ -776,7 +719,7 @@ passport.use(
     {
       clientID: "771007705103597610",
       clientSecret: "MO-DeI38q5ktJqEtndTAFfiz15QZlVCe",
-      callbackURL: "https://kiky-bot.glitch.me/callback",
+      callbackURL: "https://kiky.glitch.me/callback",
       scope: scopes,
       prompt: prompt
     },
@@ -788,6 +731,8 @@ passport.use(
   )
 );
 app.use(express.static("public"));
+
+
 
 app.get(
   "/login",
@@ -816,7 +761,8 @@ app.get("/account", function(req, res) {
   res.render("account.ejs", {
     req: req,
     res: res,
-    client: client
+    client: client,
+    db: db
   });
 });
 
@@ -827,6 +773,18 @@ app.get("/commands", function(req, res) {
     client: client
   });
 });
+
+let aaa = client.helps.array()
+
+for (const ppp of aaa) {
+app.get(`/commands/${ppp.name}`, function(req, res) {
+  res.render(`${ppp.name}.ejs`, {
+    req: req,
+    res: res,
+    client: client
+  });
+});  
+}
 
 app.get("/logout", function(req, res) {
   req.logout();
@@ -843,13 +801,67 @@ app.get("/", (req, res) => {
 });
 
 app.get("/leaderboard", (req, res) => {
-  res.render("lb.ejs", {
+  res.render("leaderboard.ejs", {
     req: req,
     client: client,
     res: res,
     db: db
   });
 });
+
+const render = async (req, res, template, data = {}) => {
+    const application = await client.fetchApplication();
+    const owner = await client.users.fetch(client.config.owner); // DO NOT REMOVE !!!
+    res.render("manage.ejs", {
+      client: client,
+      db: db,
+      req: req,
+      res: res
+    })
+};
+
+
+const authOnly = (req, res, next) => {
+  if(req.isAuthenticated()) return next();
+  else return res.redirect('/');
+};
+
+app.get("/manage/:id", authOnly, async (req, res) => {
+  if (!req.user) return res.redirect("/login")
+  
+    if(!client.guilds.cache.get(req.params.id)) return res.status(200).redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot&guild_id=${req.params.id}`);
+    if(!client.guilds.cache.get(req.params.id).members.cache.get(req.user.id).hasPermission("ADMINISTRATOR")) return res.status(200).redirect('/');
+  res.render("manage.ejs", {
+    guild: client.guilds.cache.get(req.params.id),
+    client: client,
+    req: req,
+    res: res,
+    db: db
+  })
+});
+
+
+app.get("/dashboard", async (req, res) => {
+  res.render("dashboard.ejs", {
+    client: client,
+    db: db,
+    req: req,
+    res: res
+  })
+})
+
+
+app.post("/manage/:id", urlencodedParser, async (req, res) => {
+  
+  var x = req.body.prefix;
+  if (!x) x = client.config.prefix;
+
+  var id = req.body.guild;
+  
+  db.set(`prefix.${req.params.id}`, x)
+  console.log(`Prefix for: ${req.params.id} has been change to ${x}`)
+  res.redirect("/dashboard")
+})
 
 function checkAuth(req, res, next) {
   if (req.isAuthenticated()) return next();
@@ -869,7 +881,12 @@ setInterval(
   5 * 60 * 1000
 );
 
-
+client.setGuild = function(guildid) {
+    if(!guildid) return "no guild id provided";
+    if(typeof guildid !== "string") return "provided guild id isnt a string";
+    const Guild = new db.set(`prefix.${guildid}`, client.config.prefix)
+    return "saved guild to database";
+}
 // Custom Commands
 
 
@@ -901,7 +918,7 @@ if (message.author.bot) return;
   }
   
 
-let x = db.get(`cmd_${message.guild.id}`)
+let x = db.get(`cmd.${message.guild.id}`)
 
 if (!x) return;
 
@@ -910,7 +927,7 @@ if (!x) return;
     var i;
     for(i = 0;i < x.length; i++) {
       
-      if (message.content.toLowerCase().includes(x[i].word.toLowerCase())) {
+      if (message.content.toLowerCase().includes(x[i].toLowerCase())) {
       message.delete()
       return message.channel.send(`__${message.author.tag}__, sorry your message include a badword`).then(x => x.delete({timeout: 5000}))
       }
@@ -919,4 +936,4 @@ if (!x) return;
 
 })
 
-
+client.on("error", error => console.log(`error :v`))

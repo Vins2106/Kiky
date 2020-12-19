@@ -47,7 +47,7 @@ exports.run = async (client, message, args, color, prefix, serverQueue, url, sea
           return message.channel.send(`Sorry, you do not have **${amount}** on bank!`)
         }
       
-      return message.channel.send(`Succesfully deposit **${amount}** to wallet!`).then(() => {
+      return message.channel.send(`Succesfully withdraw **${amount}** to wallet!`).then(() => {
               db.subtract(`balance.${message.author.id}.bank`, amount)
   db.add(`balance.${message.author.id}.wallet`, amount)
       })

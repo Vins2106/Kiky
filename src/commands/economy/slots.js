@@ -20,7 +20,7 @@ exports.run = async (client, message, args, color, prefix, api, CanvasRenderServ
   
     if (!amount) amount = 2;
     if (isNaN(amount)) return message.channel.send(`**${message.author.username}**, Please enter valid number!`);
-    if (amount > 500) amount = 500;
+    if (amount > 10000) amount = 10000;
   
      let random = 5 * amount;
 
@@ -71,7 +71,11 @@ ${arr1[0]} : ${arr2[2]} : ${arr3[0]}
       
   setTimeout(() => thisMes.edit(embed3), 1300);
     
-	  if(arr1[1] === arr2[1] && arr1[1] === arr3[1] || arr1[1] && arr2[1] === arr1[1] && arr3[1] || arr2[1] === arr1[1] && arr2[1] === arr3[1] || arr3[1] === arr2[1] && arr3[1] === arr1[1] || arr3[1] && arr2[1] === arr3[1] && arr1[1] || arr1[1] === arr3[1] && arr3[1] && arr2[1] ) {
+      
+      let uwaw = Math.floor(Math.random() * 10);
+      
+      if (uwaw > 6) {
+        	  if(arr1[1] === arr2[1] && arr1[1] === arr3[1] || arr1[1] && arr2[1] === arr1[1] && arr3[1] || arr2[1] === arr1[1] && arr2[1] === arr3[1] || arr3[1] === arr2[1] && arr3[1] === arr1[1] || arr3[1] && arr2[1] === arr3[1] && arr1[1] || arr1[1] === arr3[1] && arr3[1] && arr2[1] ) {
       db.add(`balance.${message.author.id}.wallet`, random)
       
      const win = new MessageEmbed()
@@ -86,6 +90,20 @@ ${arr1[0]} : ${arr2[2]} : ${arr3[0]}
       
     return setTimeout(() => thisMes.edit(`**${message.author.username}** used **${amount} 🪙** and won **${random} 🪙**`, win), 2300);
   }
+              db.subtract(`balance.${message.author.id}.wallet`, amount)
+  
+  const lose = new MessageEmbed()
+  .setAuthor(message.author.username + " Spin", message.author.displayAvatarURL())
+  .setColor(color)
+  .setDescription(`
+${arr1[2]} : ${arr2[0]} : ${arr3[2]}
+${arr1[1]} : ${arr2[1]} : ${arr3[1]} **<**
+${arr1[0]} : ${arr2[2]} : ${arr3[0]}
+`)
+  .setFooter(`==> LOSE <==`)    
+      
+	    return setTimeout(() => thisMes.edit(`**${message.author.username}** used **${amount} 🪙** and lost everything.`, lose),2300)
+      } else {
       
       db.subtract(`balance.${message.author.id}.wallet`, amount)
   
@@ -101,6 +119,7 @@ ${arr1[0]} : ${arr2[2]} : ${arr3[0]}
       
 	    return setTimeout(() => thisMes.edit(`**${message.author.username}** used **${amount} 🪙** and lost everything.`, lose),2300)
   }
+    }
 
   
 }

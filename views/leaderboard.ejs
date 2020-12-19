@@ -4,7 +4,6 @@
           <style>
             body {
               background-color: #282828 !important;
-              overflow: hidden;
             }
                         .card {
               box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -53,8 +52,8 @@
 
             .centertext {
               color: white;
-              margin-top: 27px;
-              font-size: 44px;
+              margin-top: 90px;
+              font-size: 50px;
             }
 
                   .image {
@@ -82,7 +81,7 @@
               background-color: #282828;
               color: white;
               border: 2px solid #555555;
-              font-size: 35px;
+              font-size: 40px;
               border-radius: 10px;
             }
 
@@ -92,7 +91,163 @@
               box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
               border-radius: 15px;
             }
+#containerr {
+  width: 600px;
+  height: auto;
+}
+
+.row {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid #AFAFAF;
+}
+
+.name {
+  position: relative;
+  display: inline-block;
+  width: 75%;
+  line-height: 45px;
+}
+
+.score {
+  position: relative;
+  display: inline-block;
+  width: 25%;
+}
+
+.row:nth-child(1) {
+  background: gold;
+}
+
+.row:nth-child(2) {
+  background: #c0c0c0;
+}
+
+.row:nth-child(3) {
+  background: #cd7f32;
+}
             
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.leaderboard {
+  max-width: 25rem;
+  margin: 5rem auto;
+  border-radius: 1rem;
+  box-shadow: 2px 2px 16px 1px #aaa;
+  font-family: sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+header {
+  background-color: #ff7500;
+  color: white;
+  text-transform: uppercase;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  height: 14rem;
+  position: relative;
+}
+
+h1 {
+  font-size: 3rem;
+  line-height: 3rem;
+  position: absolute;
+  margin-left: 3rem;
+  top: 4rem;
+  color: white;
+}
+            
+.bjir {
+  font-size: 50px;
+  position: absolute;
+  color: white;
+  top: 60px;
+  text-align: center !important;
+  margin-right: 50px;
+  
+}            
+
+img {
+  height: 16rem;
+  position: absolute;
+  bottom: 0;
+  right: 1rem;
+}
+
+
+
+
+
+
+
+table {
+  background-color: #16181e;
+  color: #999;
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  overflow: hidden;
+}
+
+thead {
+  font-size: 0.7rem;
+  color: #555;
+  text-transform: uppercase;
+}
+
+tbody .nick {
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+tbody tr:nth-child(2n) {
+  background-color: #1f232c;
+}
+
+.nick {
+  text-align: left;
+}
+
+.rank,
+.sp,
+.kd {
+  text-align: right;
+}
+
+.rank {
+  width: 4ch;
+  padding-left: 1rem;
+}
+
+.sp,
+.kd {
+  width: 8ch;
+}
+
+th {
+  padding: 1.5rem 1rem 0.5rem;
+}
+
+td {
+  padding: 1rem 1rem;
+}
+            .centertext {
+                            color: white;
+              margin-top: 90px;
+              font-size: 50px;
+            }
       .nav-link {
         color: white !important;
       }
@@ -105,11 +260,12 @@
             .navbar {
               margin: 10px;
             }
-      
+/* #1f232c */
+            
           </style>
 
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Kiky | Discord Bot</title>
+          <title>Leaderboard | Kiky</title>
           <link rel="stylesheet" type="text/css" href="/mdb.min.css" />
           <script src="/mdb.min.js"></script>
           <link
@@ -136,9 +292,9 @@
             integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
             crossorigin="anonymous"
           ></script>
-                    <meta property="og:type" content="website">
+          <meta property="og:type" content="website">
 <meta property="og:site_name" content="kiky-bot.glitch.me">
-<meta property="og:title" content="Home">
+<meta property="og:title" content="Leaderboard Coin & Levels">
 <meta property="og:description" content="Kiky is multifunction discord bot, economy, moderation, fun, music, and another modules, invite now!">
 <meta property="og:image" content="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.webp?size=4096">
 <meta name="theme-color" content="GREEN">
@@ -175,9 +331,7 @@
                   </li>
             <li class="nav-item">
               <a class="nav-link" href="/dashboard">Dashboard</a>
-            </li>                    <li class="nav-item">
-                    <a class="nav-link" href="/leaderboard">Leaderboard</a>
-                  </li>
+            </li>   
                   <% if(req.user) { %>
                   <li class="nav-item">
                     <a class="nav-link" href="/account"><%= req.user.username %>#<%= req.user.discriminator %></a>
@@ -192,31 +346,111 @@
               </div>        
             </div>
           </nav>
-
-
-          <p class="image" align="center">
-            <img src="https://cdn.discordapp.com/avatars/<%= client.user.id %>/<%= client.user.avatar %>.png">
-          </p>
-
-          
-                    
-                       <p class="centertext" align="center">Kiky. Multi Porpose Discord Bot</p>
-  
-          
-          
- 
-
-          <p class="hehes" align="center">
-                      <button class="hehe" onclick="document.location='/invite'">
-                  INVITE
-                </button>
-                <button class="hehe" onclick="document.location='/commands'">
-                  GET STARTED
-                </button>
-
-          </p>
-
         </body>
+        <body>
+              <p class="centertext" align="center">
+                Leaderboard Coin & Levels <br>
+              </p>
+          <div class="leaderboard">
+  <table>
+    <thead>
+      <tr>
+        <th class="rank"></th>
+        <th class="nick">Usertag</th>
+        <th class="sp">Wallet</th>
+      </tr>
+    </thead>
+        <tbody>
+                  <% 
+                  
+  let data = db.get("balance")
+  if (!data) return message.channel.send("Null database")
 
-          
+
+  var limit = 1
+
+  let lastpage = Math.ceil(Object.keys(data).length / limit)
+  let page
+  if (!page) page = 1
+
+  let frompages = limit * (page - 1)
+  let pageslimit = 10 * page
+
+  let list = Object.entries(data).sort((a, b) => b[1].wallet - a[1].wallet).slice(frompages, pageslimit)
+  let arr = []
+
+  for (var i in list) {
+    
+    let user = client.users.cache.get(list[i][0])
+    
+    let x = user.tag
+    
+  const acc = db.get(`account.${user.id}.username`)
+  const id = db.get(`account.${user.id}.id`)
+    %>
+      <tr>
+        <td class="rank"><%= i * 1 + 1 + frompages %></td>
+        <td class="nick"><%= acc %>#<%= id %></td>
+        <td class="sp"><%= list[i][1].wallet.toLocaleString() || '0' %></td>
+      </tr>
+      <tr>
+
+
+<%}%>
+
+
+ 
+     
+    </tbody>
+  </table>
+</div>
+
+
+          <div class="leaderboard">
+  <table>
+    <thead>
+      <tr>
+        <th class="rank"></th>
+        <th class="nick">Usertag</th>
+        <th class="sp">Level</th>
+        <th class="kd">XP</th>
+      </tr>
+    </thead>
+        <tbody>
+                  <% 
+                  
+  let datas = db.get("leveling")
+  if (!datas) return message.channel.send("Null database")
+
+
+  var limits = 1
+
+  let lastpages = Math.ceil(Object.keys(datas).length / limit)
+  let pages
+  if (!pages) pages = 1
+
+  let frompagess = limits * (pages - 1)
+  let pageslimits = 10 * pages
+
+  let lists = Object.entries(datas).sort((a, b) => b[1].xp - a[1].xp).slice(frompagess, pageslimits)
+  let arrs = []
+
+  for (var is in lists) {
+    
+    let users = client.users.cache.get(lists[is][0])
+    
+    let xs = users.tag
+    %>
+      <tr>
+        <td class="rank"><%= is * 1 + 1 + frompagess %></td>
+        <td class="nick"><%= xs %></td>
+        <td class="sp"><%= lists[is][1].level || '0' %></td>
+        <td class="kd"><%= lists[is][1].xp.toLocaleString() || "0"%></td>
+      </tr>
+      <tr>
+
+
+<%}%>
+     
+        </body>
       </html>
